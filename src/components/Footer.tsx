@@ -12,7 +12,7 @@ export function Footer() {
           <a href="#" className="hover:text-white transition">{t('privacy')}</a>
           <a href="#" className="hover:text-white transition">{t('terms')}</a>
         </div>
-        <p className="text-sm text-gray-400">© 2025 SpeakEstonia.ai. All rights reserved.</p>
+        <p className="text-sm text-gray-400">© 2025 elingohub.ai. All rights reserved.</p>
       </div>
     </footer>
   );

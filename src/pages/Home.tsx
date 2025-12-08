@@ -464,7 +464,7 @@ export function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
-              Why Choose SpeakEstonia.ai?
+              Why Choose elingohub.ai?
             </h2>
             <p className="text-xl text-gray-600">
               The most advanced Estonian learning platform

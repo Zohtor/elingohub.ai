@@ -279,6 +279,8 @@ export function Lesson() {
   const [answerMode, setAnswerMode] = useState<'voice' | 'text'>('voice');
   const [textAnswers, setTextAnswers] = useState<{ [key: number]: string }>({});
   const [recordingExercise, setRecordingExercise] = useState<number | null>(null);
+  const [micPermission, setMicPermission] = useState<'granted' | 'denied' | 'prompt'>('prompt');
+  const [permissionError, setPermissionError] = useState<string>('');
   const recognitionRef = useRef<any>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const exerciseRecognitionRef = useRef<any>(null);
@@ -348,6 +350,30 @@ export function Lesson() {
     { value: 1.0, label: 'Fast', icon: '🚀' }
   ];
 
+  const requestMicrophonePermission = async (): Promise<boolean> => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(track => track.stop());
+      setMicPermission('granted');
+      setPermissionError('');
+      return true;
+    } catch (error: any) {
+      console.error('Microphone permission error:', error);
+      setMicPermission('denied');
+
+      if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+        setPermissionError('Microphone access denied. Please allow microphone access in your browser settings.');
+      } else if (error.name === 'NotFoundError') {
+        setPermissionError('No microphone found. Please connect a microphone and try again.');
+      } else if (error.name === 'NotSupportedError') {
+        setPermissionError('Microphone access is not supported. Please use HTTPS or localhost.');
+      } else {
+        setPermissionError(`Microphone error: ${error.message}`);
+      }
+      return false;
+    }
+  };
+
   const calculateSimilarity = (str1: string, str2: string): number => {
     const s1 = str1.toLowerCase().trim();
     const s2 = str2.toLowerCase().trim();
@@ -384,14 +410,22 @@ export function Lesson() {
     return Math.round((1 - distance / longer.length) * 100);
   };
 
-  const startRecording = (wordKey: string, targetWord: string, index: number) => {
+  const startRecording = async (wordKey: string, targetWord: string, index: number) => {
     if (!recognitionRef.current) {
-      alert('Speech recognition is not supported in your browser');
+      alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
       return;
+    }
+
+    if (micPermission !== 'granted') {
+      const granted = await requestMicrophonePermission();
+      if (!granted) {
+        return;
+      }
     }
 
     setRecording(wordKey);
     setRecognitionResult(prev => ({ ...prev, [wordKey]: { score: 0, text: '' } }));
+    setPermissionError('');
 
     recognitionRef.current.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
@@ -416,13 +450,32 @@ export function Lesson() {
     recognitionRef.current.onerror = (event: any) => {
       console.error('Speech recognition error:', event.error);
       setRecording(null);
+
+      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+        setPermissionError('Microphone access denied. Please allow microphone access and try again.');
+        setMicPermission('denied');
+      } else if (event.error === 'no-speech') {
+        setRecognitionResult(prev => ({ ...prev, [wordKey]: { score: 0, text: 'No speech detected. Please try again.' } }));
+      } else if (event.error === 'audio-capture') {
+        setPermissionError('No microphone detected. Please check your microphone connection.');
+      } else if (event.error === 'network') {
+        setPermissionError('Network error. Please check your internet connection.');
+      } else {
+        setPermissionError(`Speech recognition error: ${event.error}`);
+      }
     };
 
     recognitionRef.current.onend = () => {
       setRecording(null);
     };
 
-    recognitionRef.current.start();
+    try {
+      recognitionRef.current.start();
+    } catch (error: any) {
+      console.error('Failed to start recognition:', error);
+      setRecording(null);
+      setPermissionError('Failed to start speech recognition. Please try again.');
+    }
   };
 
   const stopRecording = () => {
@@ -487,13 +540,21 @@ export function Lesson() {
     }
   };
 
-  const startVoiceAnswer = (exerciseIndex: number) => {
+  const startVoiceAnswer = async (exerciseIndex: number) => {
     if (!exerciseRecognitionRef.current) {
-      alert('Speech recognition is not supported in your browser');
+      alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
       return;
     }
 
+    if (micPermission !== 'granted') {
+      const granted = await requestMicrophonePermission();
+      if (!granted) {
+        return;
+      }
+    }
+
     setRecordingExercise(exerciseIndex);
+    setPermissionError('');
 
     exerciseRecognitionRef.current.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript.toLowerCase().trim();
@@ -513,13 +574,32 @@ export function Lesson() {
     exerciseRecognitionRef.current.onerror = (event: any) => {
       console.error('Speech recognition error:', event.error);
       setRecordingExercise(null);
+
+      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+        setPermissionError('Microphone access denied. Please allow microphone access and try again.');
+        setMicPermission('denied');
+      } else if (event.error === 'no-speech') {
+        setPermissionError('No speech detected. Please speak clearly and try again.');
+      } else if (event.error === 'audio-capture') {
+        setPermissionError('No microphone detected. Please check your microphone connection.');
+      } else if (event.error === 'network') {
+        setPermissionError('Network error. Please check your internet connection.');
+      } else {
+        setPermissionError(`Speech recognition error: ${event.error}`);
+      }
     };
 
     exerciseRecognitionRef.current.onend = () => {
       setRecordingExercise(null);
     };
 
-    exerciseRecognitionRef.current.start();
+    try {
+      exerciseRecognitionRef.current.start();
+    } catch (error: any) {
+      console.error('Failed to start recognition:', error);
+      setRecordingExercise(null);
+      setPermissionError('Failed to start speech recognition. Please try again.');
+    }
   };
 
   const stopVoiceAnswer = () => {
@@ -563,6 +643,27 @@ export function Lesson() {
           <ArrowLeft className="w-5 h-5" />
           <span>Back to Modules</span>
         </button>
+
+        {permissionError && (
+          <div className="mb-6 bg-red-50 border-2 border-red-300 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">!</div>
+              <div className="flex-1">
+                <h3 className="text-red-900 font-bold text-lg mb-2">Microphone Error</h3>
+                <p className="text-red-700 mb-3">{permissionError}</p>
+                <button
+                  onClick={() => {
+                    setPermissionError('');
+                    setMicPermission('prompt');
+                  }}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className={`bg-gradient-to-r ${lesson.color} rounded-3xl shadow-2xl p-8 mb-8 text-white`}>
           <div className="flex items-center space-x-4 mb-4">

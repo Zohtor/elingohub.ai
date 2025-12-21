@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Play, Volume2, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from '../hooks/useNavigate';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Tutor {
   id: string;
@@ -118,6 +119,7 @@ const tutors: Tutor[] = [
 
 export function AITutors() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
   const [currentWord, setCurrentWord] = useState<number>(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -198,10 +200,10 @@ export function AITutors() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
-            Learn with AI-Powered Virtual Tutors
+            {t('learnWithAITutors')}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Choose your favorite tutor and start an interactive learning journey with the best AI instructors
+            {t('chooseFavoriteTutor')}
           </p>
         </div>
 
@@ -209,7 +211,7 @@ export function AITutors() {
           <button
             onClick={handlePrevious}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-4 bg-white/0 group-hover/carousel:bg-white/90 backdrop-blur-sm rounded-full shadow-xl transition-all duration-300 hover:scale-110 -translate-x-4"
-            aria-label="Previous tutors"
+            aria-label={t('previousTutors')}
           >
             <ChevronLeft className="w-8 h-8 text-gray-800" />
           </button>
@@ -217,7 +219,7 @@ export function AITutors() {
           <button
             onClick={handleNext}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-4 bg-white/0 group-hover/carousel:bg-white/90 backdrop-blur-sm rounded-full shadow-xl transition-all duration-300 hover:scale-110 translate-x-4"
-            aria-label="Next tutors"
+            aria-label={t('nextTutors')}
           >
             <ChevronRight className="w-8 h-8 text-gray-800" />
           </button>
@@ -306,7 +308,7 @@ export function AITutors() {
                           )}
                           <div>
                             <h3 className="text-2xl font-bold text-white">{tutor.name}</h3>
-                            <p className="text-blue-200">{tutor.language} Tutor</p>
+                            <p className="text-blue-200">{tutor.language} {t('tutor')}</p>
                           </div>
                         </div>
                       </div>
@@ -323,13 +325,13 @@ export function AITutors() {
                         className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all flex items-center justify-center space-x-2 group/btn shadow-lg hover:shadow-xl transform hover:scale-105"
                       >
                         <Play className="w-5 h-5 fill-white" />
-                        <span>Watch Introduction</span>
+                        <span>{t('watchIntroduction')}</span>
                       </button>
                       <button
                         onClick={() => navigate('/learn/free')}
                         className="w-full py-3 px-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all flex items-center justify-center space-x-2 group/btn shadow-lg hover:shadow-xl transform hover:scale-105"
                       >
-                        <span>Start Now</span>
+                        <span>{t('startNow')}</span>
                         <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                       </button>
                     </div>
@@ -342,11 +344,11 @@ export function AITutors() {
 
         <div className="mt-12 text-center">
           <p className="text-gray-600 mb-4">
-            All tutors are powered by advanced AI technology to provide a personalized learning experience
+            {t('allTutorsPowered')}
           </p>
           <div className="inline-flex items-center space-x-2 px-6 py-3 bg-blue-50 rounded-full">
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            <span className="text-blue-700 font-semibold">Available 24/7</span>
+            <span className="text-blue-700 font-semibold">{t('available24')}</span>
           </div>
         </div>
       </div>

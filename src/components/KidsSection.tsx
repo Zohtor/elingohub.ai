@@ -1,8 +1,10 @@
 import { Gamepad2, Sparkles, Bot, Trophy } from 'lucide-react';
 import { useNavigate } from '../hooks/useNavigate';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export function KidsSection() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   return (
     <section className="py-20 px-4 bg-gradient-to-br from-blue-100 via-green-50 to-yellow-50 relative overflow-hidden">
@@ -15,16 +17,16 @@ export function KidsSection() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-full mb-6 border border-orange-200">
             <Gamepad2 className="w-5 h-5 text-orange-600 mr-2" />
-            <span className="text-sm font-bold text-orange-600">For Kids</span>
+            <span className="text-sm font-bold text-orange-600">{t('kidsForKids')}</span>
           </div>
           <h2 className="text-5xl md:text-6xl font-extrabold mb-4">
-            <span className="block text-gray-900 mb-2">Languages for Kids</span>
+            <span className="block text-gray-900 mb-2">{t('languagesForKids')}</span>
             <span className="block bg-gradient-to-r from-blue-600 via-green-600 to-yellow-600 bg-clip-text text-transparent">
-              Adventure Academy
+              {t('adventureAcademy')}
             </span>
           </h2>
           <p className="text-2xl text-gray-700 max-w-3xl mx-auto">
-            A fun and exciting learning adventure to master languages
+            {t('funLearningAdventure')}
           </p>
         </div>
 
@@ -37,8 +39,8 @@ export function KidsSection() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end justify-center pb-8">
               <div className="text-center text-white">
-                <h3 className="text-4xl font-bold mb-2">Unlock New Worlds Through Language!</h3>
-                <p className="text-xl">Adventure starts here</p>
+                <h3 className="text-4xl font-bold mb-2">{t('unlockNewWorlds')}</h3>
+                <p className="text-xl">{t('adventureStarts')}</p>
               </div>
             </div>
           </div>
@@ -49,7 +51,7 @@ export function KidsSection() {
               className="group inline-flex items-center space-x-3 px-12 py-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-2xl font-bold rounded-2xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-2xl hover:shadow-3xl transform hover:scale-110"
             >
               <Gamepad2 className="w-10 h-10 group-hover:rotate-12 transition-transform" />
-              <span>Play & Learn</span>
+              <span>{t('playAndLearn')}</span>
               <Sparkles className="w-8 h-8 group-hover:scale-125 transition-transform" />
             </button>
           </div>
@@ -63,8 +65,8 @@ export function KidsSection() {
             <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
               <Gamepad2 className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Learn Through Play</h3>
-            <p className="text-gray-600 text-lg">Fun educational games to learn 8 different languages</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('learnThroughPlay')}</h3>
+            <p className="text-gray-600 text-lg">{t('learnThroughPlayDesc')}</p>
           </button>
 
           <button
@@ -74,8 +76,8 @@ export function KidsSection() {
             <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
               <Bot className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">AI Intelligence</h3>
-            <p className="text-gray-600 text-lg">Interactive learning with smart AI tutor</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('aiIntelligence')}</h3>
+            <p className="text-gray-600 text-lg">{t('aiIntelligenceDesc')}</p>
           </button>
 
           <button
@@ -85,14 +87,14 @@ export function KidsSection() {
             <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
               <Trophy className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Rewards & Challenges</h3>
-            <p className="text-gray-600 text-lg">Earn points and badges while learning</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('rewardsChallenges')}</h3>
+            <p className="text-gray-600 text-lg">{t('rewardsChallengesDesc')}</p>
           </button>
         </div>
 
         <div className="mt-12 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 rounded-3xl p-8 text-center text-white shadow-2xl">
           <h3 className="text-3xl font-bold mb-4">
-            Learn 8 Languages Through Adventure & Games!
+            {t('learn8Languages')}
           </h3>
           <div className="flex flex-wrap justify-center gap-3 text-lg font-semibold">
             <button

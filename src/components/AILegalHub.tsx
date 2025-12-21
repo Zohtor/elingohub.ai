@@ -1,53 +1,54 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, FileText, GraduationCap, Scale, CreditCard, X, Lock, Mic, Send, Bot, User, MicOff } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface HubItem {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   image: string;
   icon: 'invoice' | 'courses' | 'governance';
-  features: string[];
+  featureKeys: string[];
 }
 
 const hubItems: HubItem[] = [
   {
     id: 'invoice',
-    title: 'Smart Invoice AI',
-    description: 'Automate your invoicing with AI-powered smart contracts and billing systems',
+    titleKey: 'smartInvoiceAI',
+    descriptionKey: 'smartInvoiceDesc',
     image: 'https://images.pexels.com/photos/6694543/pexels-photo-6694543.jpeg?auto=compress&cs=tinysrgb&w=1200',
     icon: 'invoice',
-    features: [
-      'Automated invoice generation',
-      'Multi-currency support',
-      'Tax compliance automation',
-      'Payment tracking'
+    featureKeys: [
+      'automatedInvoice',
+      'multiCurrency',
+      'taxCompliance',
+      'paymentTracking'
     ]
   },
   {
     id: 'courses',
-    title: 'AI Courses and Specializations',
-    description: 'Master AI, machine learning, and data science with expert-led courses',
+    titleKey: 'aiCoursesSpec',
+    descriptionKey: 'aiCoursesSpecDesc',
     image: 'https://images.pexels.com/photos/8349272/pexels-photo-8349272.jpeg?auto=compress&cs=tinysrgb&w=1200',
     icon: 'courses',
-    features: [
-      'Expert-led curriculum',
-      'Hands-on projects',
-      'Industry certifications',
-      'Career guidance'
+    featureKeys: [
+      'expertCurriculum',
+      'handsOnProjects',
+      'industryCerts',
+      'careerGuidance'
     ]
   },
   {
     id: 'governance',
-    title: 'AI Governance',
-    description: 'Ensure ethical AI practices with comprehensive governance frameworks',
+    titleKey: 'aiGovernance',
+    descriptionKey: 'aiGovernanceDesc',
     image: 'https://images.pexels.com/photos/5668858/pexels-photo-5668858.jpeg?auto=compress&cs=tinysrgb&w=1200',
     icon: 'governance',
-    features: [
-      'Compliance monitoring',
-      'Risk assessment',
-      'Policy frameworks',
-      'Audit trails'
+    featureKeys: [
+      'complianceMonitoring',
+      'riskAssessment',
+      'policyFrameworks',
+      'auditTrails'
     ]
   }
 ];
@@ -60,6 +61,7 @@ interface Message {
 }
 
 export function AILegalHub() {
+  const { t } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showAIChatModal, setShowAIChatModal] = useState(false);
@@ -94,7 +96,7 @@ export function AILegalHub() {
     setShowAIChatModal(true);
     setMessages([{
       id: Date.now().toString(),
-      text: `Welcome to ${serviceName}! I'm your AI assistant. How can I help you today? You can type your question or use the microphone to speak.`,
+      text: `${t('welcomeMessage')}`,
       sender: 'ai',
       timestamp: new Date()
     }]);
@@ -183,14 +185,14 @@ export function AILegalHub() {
 
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    alert(`Subscription successful for ${selectedService}!`);
+    alert(`${t('subscriptionSuccessful')} ${selectedService}!`);
     setIsProcessing(false);
     handleCloseModal();
   };
 
   const toggleRecording = () => {
     if (!recognitionRef.current) {
-      alert('Speech recognition is not supported in your browser');
+      alert(t('speechNotSupported'));
       return;
     }
 
@@ -285,13 +287,13 @@ export function AILegalHub() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-slate-600/10 to-blue-600/10 rounded-full mb-6 border border-slate-300">
             <Scale className="w-5 h-5 text-slate-700 mr-2" />
-            <span className="text-sm font-bold text-slate-700">Professional Solutions</span>
+            <span className="text-sm font-bold text-slate-700">{t('professionalSolutions')}</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
-            AI Legal & Business Hub
+            {t('aiLegalHub')}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Comprehensive AI solutions for legal compliance, business education, and governance
+            {t('aiLegalHubDesc')}
           </p>
         </div>
 
@@ -324,35 +326,35 @@ export function AILegalHub() {
 
                       <div className="p-8 md:p-12 flex flex-col justify-center">
                         <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                          {item.title}
+                          {t(item.titleKey)}
                         </h3>
                         <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                          {item.description}
+                          {t(item.descriptionKey)}
                         </p>
 
                         <div className="space-y-4 mb-8">
-                          {item.features.map((feature, index) => (
+                          {item.featureKeys.map((featureKey, index) => (
                             <div key={index} className="flex items-center space-x-3">
                               <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                              <span className="text-gray-700">{feature}</span>
+                              <span className="text-gray-700">{t(featureKey)}</span>
                             </div>
                           ))}
                         </div>
 
                         <div className="flex flex-col gap-4">
                           <button
-                            onClick={() => handleLearnMoreClick(item.title)}
+                            onClick={() => handleLearnMoreClick(t(item.titleKey))}
                             className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2"
                           >
                             <Bot className="w-5 h-5" />
-                            Learn More
+                            {t('learnMore')}
                           </button>
                           <button
-                            onClick={() => handleGoProClick(item.title)}
+                            onClick={() => handleGoProClick(t(item.titleKey))}
                             className="w-full px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-bold rounded-xl hover:from-red-700 hover:to-red-800 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2"
                           >
                             <CreditCard className="w-5 h-5" />
-                            Go Pro
+                            {t('goPro')}
                           </button>
                         </div>
                       </div>
@@ -397,11 +399,11 @@ export function AILegalHub() {
 
         <div className="mt-12 text-center">
           <p className="text-gray-600 mb-4">
-            Trusted by leading organizations worldwide for AI-powered business solutions
+            {t('trustedOrganizations')}
           </p>
           <div className="inline-flex items-center space-x-2 px-6 py-3 bg-blue-50 rounded-full">
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            <span className="text-blue-700 font-semibold">Enterprise Ready</span>
+            <span className="text-blue-700 font-semibold">{t('enterpriseReady')}</span>
           </div>
         </div>
       </div>
@@ -414,7 +416,7 @@ export function AILegalHub() {
                 <div>
                   <h3 className="text-2xl font-bold flex items-center gap-2">
                     <Bot className="w-6 h-6" />
-                    AI Assistant
+                    {t('aiAssistant')}
                   </h3>
                   <p className="text-blue-100 text-sm mt-1">{selectedService}</p>
                 </div>
@@ -488,7 +490,7 @@ export function AILegalHub() {
                       ? 'bg-red-600 hover:bg-red-700 text-white'
                       : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                   }`}
-                  title={isRecording ? 'Stop recording' : 'Start voice input'}
+                  title={isRecording ? t('stopRecording') : t('startVoiceInput')}
                 >
                   {isRecording ? (
                     <MicOff className="w-5 h-5 animate-pulse" />
@@ -501,7 +503,7 @@ export function AILegalHub() {
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Type your message or use voice..."
+                  placeholder={t('typeMessagePlaceholder')}
                   className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
                 />
                 <button
@@ -514,7 +516,7 @@ export function AILegalHub() {
               </div>
               {isRecording && (
                 <p className="text-xs text-red-600 mt-2 text-center animate-pulse">
-                  Recording... Speak now
+                  {t('recordingSpeakNow')}
                 </p>
               )}
             </div>
@@ -530,7 +532,7 @@ export function AILegalHub() {
                 <div>
                   <h3 className="text-2xl font-bold flex items-center gap-2">
                     <CreditCard className="w-6 h-6" />
-                    Go Pro
+                    {t('goPro')}
                   </h3>
                   <p className="text-red-100 text-sm mt-1">{selectedService}</p>
                 </div>
@@ -547,14 +549,14 @@ export function AILegalHub() {
               <div className="bg-gradient-to-br from-blue-50 to-red-50 p-4 rounded-xl border border-red-200">
                 <div className="flex items-center gap-2 text-red-700 mb-2">
                   <Lock className="w-5 h-5" />
-                  <span className="font-semibold">Secure Payment</span>
+                  <span className="font-semibold">{t('securePayment')}</span>
                 </div>
-                <p className="text-sm text-gray-600">Your payment information is encrypted and secure</p>
+                <p className="text-sm text-gray-600">{t('paymentEncrypted')}</p>
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Card Number
+                  {t('cardNumber')}
                 </label>
                 <input
                   type="text"
@@ -568,7 +570,7 @@ export function AILegalHub() {
 
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Cardholder Name
+                  {t('cardholderName')}
                 </label>
                 <input
                   type="text"
@@ -583,7 +585,7 @@ export function AILegalHub() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">
-                    Expiry Date
+                    {t('expiryDate')}
                   </label>
                   <input
                     type="text"
@@ -611,12 +613,12 @@ export function AILegalHub() {
 
               <div className="bg-gray-50 p-4 rounded-xl">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-gray-600">Monthly Subscription</span>
+                  <span className="text-gray-600">{t('monthlySubscription')}</span>
                   <span className="font-bold text-gray-900">$49.99/month</span>
                 </div>
                 <div className="flex items-center justify-between text-sm text-gray-500">
-                  <span>Billed monthly</span>
-                  <span>Cancel anytime</span>
+                  <span>{t('billedMonthly')}</span>
+                  <span>{t('cancelAnytime')}</span>
                 </div>
               </div>
 
@@ -628,15 +630,15 @@ export function AILegalHub() {
                 {isProcessing ? (
                   <span className="flex items-center justify-center gap-2">
                     <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    Processing...
+                    {t('processing')}
                   </span>
                 ) : (
-                  'Subscribe Now'
+                  t('subscribeNow')
                 )}
               </button>
 
               <p className="text-xs text-center text-gray-500">
-                By subscribing, you agree to our Terms of Service and Privacy Policy
+                {t('termsAgreement')}
               </p>
             </form>
           </div>

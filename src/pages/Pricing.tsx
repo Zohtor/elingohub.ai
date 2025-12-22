@@ -1,13 +1,35 @@
-import { Check } from 'lucide-react';
+import { useState } from 'react';
+import { Check, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from '../hooks/useNavigate';
+import { useLanguage } from '../contexts/LanguageContext';
+import { ChargilyPayment } from '../components/ChargilyPayment';
 
 export function Pricing() {
   const { profile } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const handleGetStarted = () => {
     navigate('/signup');
+  };
+
+  const handleSubscribe = () => {
+    if (!profile) {
+      navigate('/signup');
+      return;
+    }
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentSuccess = (data: any) => {
+    setShowPaymentModal(false);
+    window.location.href = data.checkoutUrl;
+  };
+
+  const handlePaymentError = (error: string) => {
+    alert(error);
   };
 
   return (
@@ -66,11 +88,11 @@ export function Pricing() {
             </ul>
 
             <button
-              onClick={handleGetStarted}
+              onClick={handleSubscribe}
               disabled={profile?.subscription_type === 'pro'}
               className="w-full py-3 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-lg"
             >
-              {profile?.subscription_type === 'pro' ? 'Current Plan' : 'Contact Us'}
+              {profile?.subscription_type === 'pro' ? 'Current Plan' : t('subscribeNow')}
             </button>
           </div>
         </div>
@@ -79,6 +101,25 @@ export function Pricing() {
           <p className="text-sm">All plans include a 7-day money-back guarantee</p>
         </div>
       </div>
+
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="relative max-w-2xl w-full">
+            <button
+              onClick={() => setShowPaymentModal(false)}
+              className="absolute top-4 right-4 bg-white rounded-full p-2 hover:bg-gray-100 transition z-10"
+            >
+              <X className="w-6 h-6 text-gray-600" />
+            </button>
+            <ChargilyPayment
+              amount={14990}
+              planName="Pro Plan"
+              onSuccess={handlePaymentSuccess}
+              onError={handlePaymentError}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

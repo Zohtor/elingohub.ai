@@ -104,6 +104,23 @@ export function ChargilyPayment({ amount, planName, onSuccess, onError }: Chargi
         <p className="text-sm text-gray-600 mt-1">{t('billedMonthly')}</p>
       </div>
 
+      <div className="bg-gray-50 rounded-lg p-4 mb-6">
+        <p className="text-xs text-gray-600 text-center mb-3">
+          {t('acceptAllCards')}
+        </p>
+        <div className="flex items-center justify-center gap-4">
+          <div className="bg-white px-4 py-2 rounded-md shadow-sm border border-gray-200 flex items-center">
+            <span className="text-blue-600 font-bold text-sm">{t('visaCard')}</span>
+          </div>
+          <div className="bg-white px-4 py-2 rounded-md shadow-sm border border-gray-200 flex items-center">
+            <span className="text-orange-600 font-bold text-sm">{t('mastercardCard')}</span>
+          </div>
+          <div className="bg-white px-4 py-2 rounded-md shadow-sm border border-gray-200 flex items-center">
+            <span className="text-yellow-600 font-bold text-sm">{t('cibCard')}</span>
+          </div>
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -127,7 +144,7 @@ export function ChargilyPayment({ amount, planName, onSuccess, onError }: Chargi
             type="text"
             value={cardDetails.cardholderName}
             onChange={(e) => handleInputChange('cardholderName', e.target.value)}
-            placeholder="محمد أحمد"
+            placeholder={t('language') === 'ar' ? 'محمد أحمد' : 'John Doe'}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
           />
